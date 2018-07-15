@@ -2,6 +2,7 @@ import torch
 from torch import nn
 from torch.autograd import Variable
 
+
 class AddCoordinates(object):
     r"""Coordinate Adder Module.
 
@@ -15,12 +16,10 @@ class AddCoordinates(object):
     """
 
     def __init__(self, with_r=False, usegpu=True):
-        
         self.with_r = with_r
-        self.usegpu =  usegpu
+        self.usegpu = usegpu
 
     def __call__(self, image):
-
         batch_size, _, image_height, image_width = image.size()
 
         y_coords = 2.0 * torch.arange(image_height).unsqueeze(
@@ -67,10 +66,9 @@ class CoordConv(nn.Module):
         self.coord_adder = AddCoordinates(with_r, usegpu)
 
     def forward(self, x):
-
         x = self.coord_adder(x)
         x = self.conv_layer(x)
- 
+
         return x
 
 
@@ -86,19 +84,18 @@ class CoordConvTranspose(nn.Module):
         if with_r:
             in_channels += 1
 
-        self.conv_transpose_layer = nn.ConvTranspose2d(in_channels, out_channels,
-                                                       kernel_size, stride=stride,
-                                                       padding=padding,
-                                                       output_padding=output_padding,
-                                                       groups=groups, bias=bias,
-                                                       dilation=dilation)
+        self.conv_tr_layer = nn.ConvTranspose2d(in_channels, out_channels,
+                                                kernel_size, stride=stride,
+                                                padding=padding,
+                                                output_padding=output_padding,
+                                                groups=groups, bias=bias,
+                                                dilation=dilation)
 
         self.coord_adder = AddCoordinates(with_r, usegpu)
 
     def forward(self, x):
-
         x = self.coord_adder(x)
-        x = self.conv_transpose_layer(x)
+        x = self.conv_tr_layer(x)
 
         return x
 
@@ -125,14 +122,12 @@ class CoordConvNet(nn.Module):
         self.coord_adder = AddCoordinates(self.with_r, usegpu)
 
     def __get_model(self):
-
         for module in list(self.cnn_model.modules()):
             if module.__class__ == torch.nn.modules.container.Sequential:
                 self.cnn_model = module
                 break
 
     def __update_weights(self):
-
         coord_channels = 2
         if self.with_r:
             coord_channels += 1
@@ -142,7 +137,7 @@ class CoordConvNet(nn.Module):
                 weights = l.weight.data
 
                 out_channels, in_channels, k_height, k_width = weights.size()
-        
+
                 coord_weights = torch.zeros(out_channels, coord_channels,
                                             k_height, k_width)
 
@@ -153,7 +148,6 @@ class CoordConvNet(nn.Module):
                 l.in_channels += coord_channels
 
     def forward(self, x):
-
         for layer_name, layer in self.cnn_model._modules.items():
             if layer.__str__().startswith('Conv2d'):
                 x = self.coord_adder(x)
