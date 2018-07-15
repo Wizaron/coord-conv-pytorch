@@ -61,8 +61,9 @@ class CoordConv(nn.Module):
             in_channels += 1
 
         self.conv_layer = nn.Conv2d(in_channels, out_channels,
-                                    kernel_size, stride=1, padding=0,
-                                    dilation=1, groups=1, bias=True)
+                                    kernel_size, stride=stride,
+                                    padding=padding, dilation=dilation,
+                                    groups=groups, bias=bias)
 
         self.coord_adder = AddCoordinates(with_r, usegpu)
 
