@@ -4,7 +4,7 @@ This repository implements CoordConv Module in [An intriguing failing of convolu
 
 `coord_conv.py` contains the modules and `test.py` includes methods to show usage of the modules.
 
-* `AddCoordinates` : This module concatenates coordinate information (x, y, and r) with given input tensor. `x` and `y` coordinates are scaled to `[-1, 1]` range where origin is the **center**. `r` is the Euclidean distance from the **center** and is scaled to `[0, 1]`.
+* `AddCoordinates` : This module concatenates coordinate information (`x`, `y`, and `r`) with given input tensor. `x` and `y` coordinates are scaled to `[-1, 1]` range where origin is the **center**. `r` is the Euclidean distance from the **center** and is scaled to `[0, 1]`.
 
 * `CoordConv` : 2D convolution module using extra coordinate information.
 
