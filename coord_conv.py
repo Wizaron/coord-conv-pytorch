@@ -4,6 +4,7 @@ from torch.autograd import Variable
 
 
 class AddCoordinates(object):
+
     r"""Coordinate Adder Module.
 
     This module concatenates coordinate information (x, y, and r) with given
@@ -12,8 +13,7 @@ class AddCoordinates(object):
     x and y coordinates are scaled to [-1, 1] range where origin is the center.
     r is the Euclidean distance from the center and is scaled to [0, 1].
 
-    Input tensor shape : [N, C, H, W]
-    """
+    Input tensor shape : [N, C, H, W]"""
 
     def __init__(self, with_r=False, usegpu=True):
         self.with_r = with_r
@@ -47,6 +47,7 @@ class AddCoordinates(object):
 
 
 class CoordConv(nn.Module):
+
     r"""2D Convolution Module Using Extra Coordinate Information."""
 
     def __init__(self, in_channels, out_channels, kernel_size,
@@ -73,6 +74,7 @@ class CoordConv(nn.Module):
 
 
 class CoordConvTranspose(nn.Module):
+
     r"""2D Transposed Convolution Module Using Extra Coordinate Information."""
 
     def __init__(self, in_channels, out_channels, kernel_size,
@@ -101,6 +103,7 @@ class CoordConvTranspose(nn.Module):
 
 
 class CoordConvNet(nn.Module):
+
     r"""Improves 2D Convolutions inside a ConvNet by processing extra
     coordinate information.
 
