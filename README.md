@@ -2,6 +2,8 @@
 
 This repository implements CoordConv Module in [An intriguing failing of convolutional neural networks and the CoordConv solution](https://arxiv.org/abs/1807.03247).
 
+Blog post can be found [here](https://eng.uber.com/coordconv/).
+
 `coord_conv.py` contains the modules and `test.py` includes methods to show usage of the modules.
 
 * `AddCoordinates` : This module concatenates coordinate information (`x`, `y`, and `r`) with given input tensor. `x` and `y` coordinates are scaled to `[-1, 1]` range where origin is the **center**. `r` is the Euclidean distance from the **center** and is scaled to `[0, 1]`.
