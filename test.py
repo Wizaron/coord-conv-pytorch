@@ -1,5 +1,4 @@
 import torch
-from torch import nn
 from torch.autograd import Variable
 from coord_conv import AddCoordinates, CoordConv, CoordConvNet
 
@@ -31,6 +30,8 @@ def test_coordConv(input_image, usegpu=False):
     print '- CoordConv'
 
     coord_conv = CoordConv(3, 64, 3, with_r=True, usegpu=usegpu)
+    if usegpu:
+        coord_conv = coord_conv.cuda()
     output = coord_conv(input_image)
 
     print 'Input Size  : ', input_image.size()
@@ -52,6 +53,9 @@ def test_coordConvNet(usegpu=False):
 
     print 'CoordVGG16 :\n', vgg16
 
+    if usegpu:
+        vgg16 = vgg16.cuda()
+
     output = vgg16(input_image)
 
     print 'Input Size  : ', input_image.size()
@@ -60,7 +64,7 @@ def test_coordConvNet(usegpu=False):
     print '- CoordConvNet: OK!'
 
 if __name__ == '__main__':
-    usegpu =  False
+    usegpu = False
 
     input_image = generate_input(2, 64, 64, usegpu=usegpu)
 
