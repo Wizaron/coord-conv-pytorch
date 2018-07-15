@@ -37,7 +37,6 @@ class AddCoordinates(object):
             coords = torch.cat((coords, rs), dim=0)
 
         coords = torch.unsqueeze(coords, dim=0).repeat(batch_size, 1, 1, 1)
-
         coords = Variable(coords)
 
         if self.usegpu:
@@ -72,6 +71,35 @@ class CoordConv(nn.Module):
         x = self.coord_adder(x)
         x = self.conv_layer(x)
  
+        return x
+
+
+class CoordConvTranspose(nn.Module):
+    r"""2D Transposed Convolution Module Using Extra Coordinate Information."""
+
+    def __init__(self, in_channels, out_channels, kernel_size,
+                 stride=1, padding=0, output_padding=0, groups=1, bias=True,
+                 dilation=1, with_r=False, usegpu=True):
+        super(CoordConvTranspose, self).__init__()
+
+        in_channels += 2
+        if with_r:
+            in_channels += 1
+
+        self.conv_transpose_layer = nn.ConvTranspose2d(in_channels, out_channels,
+                                                       kernel_size, stride=stride,
+                                                       padding=padding,
+                                                       output_padding=output_padding,
+                                                       groups=groups, bias=bias,
+                                                       dilation=dilation)
+
+        self.coord_adder = AddCoordinates(with_r, usegpu)
+
+    def forward(self, x):
+
+        x = self.coord_adder(x)
+        x = self.conv_transpose_layer(x)
+
         return x
 
 

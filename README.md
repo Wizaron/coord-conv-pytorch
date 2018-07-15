@@ -8,6 +8,8 @@ This repository implements CoordConv Module in [An intriguing failing of convolu
 
 * `CoordConv` : 2D convolution module using extra coordinate information.
 
+* `CoordConvTranspose` : 2D transposed convolution module using extra coordinate information.
+
 * `CoodConvNet` : This module improves 2D convolutions inside a convnet by processing extra coordinate information. It adds coordinate information to inputs of each 2D convolution module (`torch.nn.Conv2d`). Convnet model must contain single **Sequential** container (`torch.nn.modules.container.Sequential`).
 
 ## Environment

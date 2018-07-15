@@ -1,6 +1,6 @@
 import torch
 from torch.autograd import Variable
-from coord_conv import AddCoordinates, CoordConv, CoordConvNet
+from coord_conv import AddCoordinates, CoordConv, CoordConvTranspose, CoordConvNet
 
 def generate_input(batch_size, image_height, image_width, usegpu=False):
 
@@ -39,6 +39,21 @@ def test_coordConv(input_image, usegpu=False):
 
     print '- CoordConv: OK!'
 
+def test_coordConvTranspose(input_image, usegpu=False):
+
+    print '- CoordConvTranspose'
+
+    coord_conv_transpose = CoordConvTranspose(3, 64, 3, with_r=True,
+                                              usegpu=usegpu)
+    if usegpu:
+        coord_conv_transpose = coord_conv_transpose.cuda()
+    output = coord_conv_transpose(input_image)
+
+    print 'Input Size  : ', input_image.size()
+    print 'Output Size : ', output.size()
+
+    print '- CoordConvTranspose: OK!'
+
 def test_coordConvNet(usegpu=False):
 
     print '- CoordConvNet'
@@ -70,4 +85,5 @@ if __name__ == '__main__':
 
     test_addCoordinates(input_image, usegpu)
     test_coordConv(input_image, usegpu)
+    test_coordConvTranspose(input_image, usegpu)
     test_coordConvNet(usegpu)
