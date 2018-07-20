@@ -73,7 +73,6 @@ def test_coordConvNet():
 
     print('CoordVGG16 :\n', vgg16)
 
-
     output = vgg16(input_image)
 
     print('Input Size  : ', input_image.size())
@@ -83,7 +82,7 @@ def test_coordConvNet():
 
 if __name__ == '__main__':
 
-    usegpu=True
+    usegpu = True
     input_image = generate_input(2, 64, 64, usegpu=usegpu)
 
     test_addCoordinates(input_image)

@@ -224,7 +224,8 @@ class CoordConvNet(nn.Module):
                 coord_weights = torch.zeros(out_channels, coord_channels,
                                             k_height, k_width)
 
-                weights = torch.cat((coord_weights.to(weights.device), weights), dim=1)
+                weights = torch.cat((coord_weights.to(weights.device),
+                                     weights), dim=1)
                 weights = nn.Parameter(weights)
 
                 l.weight = weights
