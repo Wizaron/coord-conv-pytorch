@@ -117,7 +117,6 @@ class CoordConvTranspose(nn.Module):
         Same as `torch.nn.ConvTranspose2d` with two additional arguments
         with_r (bool, optional): If `True`, adds radius (`r`) coordinate
             information to input image. Default: `False`
-            Default: `True`
 
     Shape:
         - Input: `(N, C_{in}, H_{in}, W_{in})`
@@ -128,7 +127,7 @@ class CoordConvTranspose(nn.Module):
         >>> input = torch.randn(8, 3, 64, 64)
         >>> output = coord_conv_tr(input)
 
-        >>> coord_conv_tr = CoordConvTranspose(3, 16, 3, with_r=True)
+        >>> coord_conv_tr = CoordConvTranspose(3, 16, 3, with_r=True).cuda()
         >>> input = torch.randn(8, 3, 64, 64).cuda()
         >>> output = coord_conv_tr(input)
     """
