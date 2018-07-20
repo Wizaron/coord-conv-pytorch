@@ -31,6 +31,11 @@ class AddCoordinates(object):
         >>> coord_adder = AddCoordinates(True)
         >>> input = torch.randn(8, 3, 64, 64).cuda()
         >>> output = coord_adder(input)
+
+        >>> device = torch.device("cuda:0")
+        >>> coord_adder = AddCoordinates(True)
+        >>> input = torch.randn(8, 3, 64, 64).to(device)
+        >>> output = coord_adder(input)
     """
 
     def __init__(self, with_r=False):
@@ -82,6 +87,11 @@ class CoordConv(nn.Module):
         >>> coord_conv = CoordConv(3, 16, 3, with_r=True).cuda()
         >>> input = torch.randn(8, 3, 64, 64).cuda()
         >>> output = coord_conv(input)
+
+        >>> device = torch.device("cuda:0")
+        >>> coord_conv = CoordConv(3, 16, 3, with_r=True).to(device)
+        >>> input = torch.randn(8, 3, 64, 64).to(device)
+        >>> output = coord_conv(input)
     """
 
     def __init__(self, in_channels, out_channels, kernel_size,
@@ -129,6 +139,11 @@ class CoordConvTranspose(nn.Module):
 
         >>> coord_conv_tr = CoordConvTranspose(3, 16, 3, with_r=True).cuda()
         >>> input = torch.randn(8, 3, 64, 64).cuda()
+        >>> output = coord_conv_tr(input)
+
+        >>> device = torch.device("cuda:0")
+        >>> coord_conv_tr = CoordConvTranspose(3, 16, 3, with_r=True).to(device)
+        >>> input = torch.randn(8, 3, 64, 64).to(device)
         >>> output = coord_conv_tr(input)
     """
 
@@ -190,6 +205,12 @@ class CoordConvNet(nn.Module):
         >>> cnn_model = ...
         >>> cnn_model = CoordConvNet(cnn_model, True).cuda()
         >>> input = torch.randn(8, 3, 64, 64).cuda()
+        >>> outputs = cnn_model(input)
+
+        >>> device = torch.device("cuda:0")
+        >>> cnn_model = ...
+        >>> cnn_model = CoordConvNet(cnn_model, True).to(device)
+        >>> input = torch.randn(8, 3, 64, 64).to(device)
         >>> outputs = cnn_model(input)
     """
 
