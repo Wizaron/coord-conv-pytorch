@@ -1,6 +1,5 @@
 import torch
 from torch import nn
-from torch.autograd import Variable
 
 
 class AddCoordinates(object):
@@ -19,8 +18,6 @@ class AddCoordinates(object):
     Args:
         with_r (bool, optional): If `True`, adds radius (`r`) coordinate
             information to input image. Default: `False`
-        usegpu (bool, optional): If `True`, runs operations on GPU
-            Default: `True`
 
     Shape:
         - Input: `(N, C_{in}, H_{in}, W_{in})`
@@ -36,9 +33,8 @@ class AddCoordinates(object):
         >>> output = coord_adder(input)
     """
 
-    def __init__(self, with_r=False, usegpu=True):
+    def __init__(self, with_r=False):
         self.with_r = with_r
-        self.usegpu = usegpu
 
     def __call__(self, image):
         batch_size, _, image_height, image_width = image.size()
@@ -57,12 +53,8 @@ class AddCoordinates(object):
             coords = torch.cat((coords, rs), dim=0)
 
         coords = torch.unsqueeze(coords, dim=0).repeat(batch_size, 1, 1, 1)
-        coords = Variable(coords)
 
-        if self.usegpu:
-            coords = coords.cuda()
-
-        image = torch.cat((coords, image), dim=1)
+        image = torch.cat((coords.to(image.device), image), dim=1)
 
         return image
 
@@ -77,26 +69,24 @@ class CoordConv(nn.Module):
         Same as `torch.nn.Conv2d` with two additional arguments
         with_r (bool, optional): If `True`, adds radius (`r`) coordinate
             information to input image. Default: `False`
-        usegpu (bool, optional): If `True`, runs operations on GPU
-            Default: `True`
 
     Shape:
         - Input: `(N, C_{in}, H_{in}, W_{in})`
         - Output: `(N, C_{out}, H_{out}, W_{out})`
 
     Examples:
-        >>> coord_conv = CoordConv(3, 16, 3, with_r=True, usegpu=False)
+        >>> coord_conv = CoordConv(3, 16, 3, with_r=True)
         >>> input = torch.randn(8, 3, 64, 64)
         >>> output = coord_conv(input)
 
-        >>> coord_conv = CoordConv(3, 16, 3, with_r=True, usegpu=True).cuda()
+        >>> coord_conv = CoordConv(3, 16, 3, with_r=True).cuda()
         >>> input = torch.randn(8, 3, 64, 64).cuda()
         >>> output = coord_conv(input)
     """
 
     def __init__(self, in_channels, out_channels, kernel_size,
                  stride=1, padding=0, dilation=1, groups=1, bias=True,
-                 with_r=False, usegpu=True):
+                 with_r=False):
         super(CoordConv, self).__init__()
 
         in_channels += 2
@@ -108,7 +98,7 @@ class CoordConv(nn.Module):
                                     padding=padding, dilation=dilation,
                                     groups=groups, bias=bias)
 
-        self.coord_adder = AddCoordinates(with_r, usegpu)
+        self.coord_adder = AddCoordinates(with_r)
 
     def forward(self, x):
         x = self.coord_adder(x)
@@ -127,7 +117,6 @@ class CoordConvTranspose(nn.Module):
         Same as `torch.nn.ConvTranspose2d` with two additional arguments
         with_r (bool, optional): If `True`, adds radius (`r`) coordinate
             information to input image. Default: `False`
-        usegpu (bool, optional): If `True`, runs operations on GPU
             Default: `True`
 
     Shape:
@@ -135,20 +124,18 @@ class CoordConvTranspose(nn.Module):
         - Output: `(N, C_{out}, H_{out}, W_{out})`
 
     Examples:
-        >>> coord_conv_tr = CoordConvTranspose(3, 16, 3, with_r=True,
-        >>>                                    usegpu=False)
+        >>> coord_conv_tr = CoordConvTranspose(3, 16, 3, with_r=True)
         >>> input = torch.randn(8, 3, 64, 64)
         >>> output = coord_conv_tr(input)
 
-        >>> coord_conv_tr = CoordConvTranspose(3, 16, 3, with_r=True,
-        >>>                                    usegpu=True).cuda()
+        >>> coord_conv_tr = CoordConvTranspose(3, 16, 3, with_r=True)
         >>> input = torch.randn(8, 3, 64, 64).cuda()
         >>> output = coord_conv_tr(input)
     """
 
     def __init__(self, in_channels, out_channels, kernel_size,
                  stride=1, padding=0, output_padding=0, groups=1, bias=True,
-                 dilation=1, with_r=False, usegpu=True):
+                 dilation=1, with_r=False):
         super(CoordConvTranspose, self).__init__()
 
         in_channels += 2
@@ -162,7 +149,7 @@ class CoordConvTranspose(nn.Module):
                                                 groups=groups, bias=bias,
                                                 dilation=dilation)
 
-        self.coord_adder = AddCoordinates(with_r, usegpu)
+        self.coord_adder = AddCoordinates(with_r)
 
     def forward(self, x):
         x = self.coord_adder(x)
@@ -189,8 +176,6 @@ class CoordConvNet(nn.Module):
             container (`torch.nn.modules.container.Sequential`).
         with_r (bool, optional): If `True`, adds radius (`r`) coordinate
             information to input image. Default: `False`
-        usegpu (bool, optional): If `True`, runs operations on GPU
-            Default: `True`
 
     Shape:
         - Input: Same as the input of the model.
@@ -209,7 +194,7 @@ class CoordConvNet(nn.Module):
         >>> outputs = cnn_model(input)
     """
 
-    def __init__(self, cnn_model, with_r=False, usegpu=True):
+    def __init__(self, cnn_model, with_r=False):
         super(CoordConvNet, self).__init__()
 
         self.with_r = with_r
@@ -218,7 +203,7 @@ class CoordConvNet(nn.Module):
         self.__get_model()
         self.__update_weights()
 
-        self.coord_adder = AddCoordinates(self.with_r, usegpu)
+        self.coord_adder = AddCoordinates(self.with_r)
 
     def __get_model(self):
         for module in list(self.cnn_model.modules()):
@@ -240,7 +225,7 @@ class CoordConvNet(nn.Module):
                 coord_weights = torch.zeros(out_channels, coord_channels,
                                             k_height, k_width)
 
-                weights = torch.cat((coord_weights, weights), dim=1)
+                weights = torch.cat((coord_weights.to(weights.device), weights), dim=1)
                 weights = nn.Parameter(weights)
 
                 l.weight = weights
