@@ -24,11 +24,11 @@ class AddCoordinates(object):
         - Output: `(N, (C_{in} + 2) or (C_{in} + 3), H_{in}, W_{in})`
 
     Examples:
-        >>> coord_adder = AddCoordinates(True, False)
+        >>> coord_adder = AddCoordinates(True)
         >>> input = torch.randn(8, 3, 64, 64)
         >>> output = coord_adder(input)
 
-        >>> coord_adder = AddCoordinates(True, True).cuda()
+        >>> coord_adder = AddCoordinates(True)
         >>> input = torch.randn(8, 3, 64, 64).cuda()
         >>> output = coord_adder(input)
     """
@@ -183,12 +183,12 @@ class CoordConvNet(nn.Module):
 
     Examples:
         >>> cnn_model = ...
-        >>> cnn_model = CoordConvNet(cnn_model, True, False)
+        >>> cnn_model = CoordConvNet(cnn_model, True)
         >>> input = torch.randn(8, 3, 64, 64)
         >>> outputs = cnn_model(input)
 
         >>> cnn_model = ...
-        >>> cnn_model = CoordConvNet(cnn_model, True, True).cuda()
+        >>> cnn_model = CoordConvNet(cnn_model, True).cuda()
         >>> input = torch.randn(8, 3, 64, 64).cuda()
         >>> outputs = cnn_model(input)
     """
