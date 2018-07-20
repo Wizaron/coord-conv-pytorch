@@ -23,22 +23,19 @@ Blog post can be found [here](https://eng.uber.com/coordconv/).
     Args:
         with_r (bool, optional): If `True`, adds radius (`r`) coordinate
             information to input image. Default: `False`
-        usegpu (bool, optional): If `True`, runs operations on GPU
-            Default: `True`
 
     Shape:
         - Input: `(N, C_{in}, H_{in}, W_{in})`
         - Output: `(N, (C_{in} + 2) or (C_{in} + 3), H_{in}, W_{in})`
 
     Examples:
-        >>> coord_adder = AddCoordinates(True, False)
+        >>> coord_adder = AddCoordinates(True)
         >>> input = torch.randn(8, 3, 64, 64)
         >>> output = coord_adder(input)
 
-        >>> coord_adder = AddCoordinates(True, True).cuda()
+        >>> coord_adder = AddCoordinates(True)
         >>> input = torch.randn(8, 3, 64, 64).cuda()
         >>> output = coord_adder(input)
-
 ```
 
 ## CoordConv
@@ -52,19 +49,17 @@ Blog post can be found [here](https://eng.uber.com/coordconv/).
         Same as `torch.nn.Conv2d` with two additional arguments
         with_r (bool, optional): If `True`, adds radius (`r`) coordinate
             information to input image. Default: `False`
-        usegpu (bool, optional): If `True`, runs operations on GPU
-            Default: `True`
 
     Shape:
         - Input: `(N, C_{in}, H_{in}, W_{in})`
         - Output: `(N, C_{out}, H_{out}, W_{out})`
 
     Examples:
-        >>> coord_conv = CoordConv(3, 16, 3, with_r=True, usegpu=False)
+        >>> coord_conv = CoordConv(3, 16, 3, with_r=True)
         >>> input = torch.randn(8, 3, 64, 64)
         >>> output = coord_conv(input)
 
-        >>> coord_conv = CoordConv(3, 16, 3, with_r=True, usegpu=True).cuda()
+        >>> coord_conv = CoordConv(3, 16, 3, with_r=True).cuda()
         >>> input = torch.randn(8, 3, 64, 64).cuda()
         >>> output = coord_conv(input)
 ```
@@ -80,21 +75,17 @@ Blog post can be found [here](https://eng.uber.com/coordconv/).
         Same as `torch.nn.ConvTranspose2d` with two additional arguments
         with_r (bool, optional): If `True`, adds radius (`r`) coordinate
             information to input image. Default: `False`
-        usegpu (bool, optional): If `True`, runs operations on GPU
-            Default: `True`
 
     Shape:
         - Input: `(N, C_{in}, H_{in}, W_{in})`
         - Output: `(N, C_{out}, H_{out}, W_{out})`
 
     Examples:
-        >>> coord_conv_tr = CoordConvTranspose(3, 16, 3, with_r=True,
-        >>>                                    usegpu=False)
+        >>> coord_conv_tr = CoordConvTranspose(3, 16, 3, with_r=True)
         >>> input = torch.randn(8, 3, 64, 64)
         >>> output = coord_conv_tr(input)
 
-        >>> coord_conv_tr = CoordConvTranspose(3, 16, 3, with_r=True,
-        >>>                                    usegpu=True).cuda()
+        >>> coord_conv_tr = CoordConvTranspose(3, 16, 3, with_r=True).cuda()
         >>> input = torch.randn(8, 3, 64, 64).cuda()
         >>> output = coord_conv_tr(input)
 ```
@@ -118,8 +109,6 @@ Blog post can be found [here](https://eng.uber.com/coordconv/).
             container (`torch.nn.modules.container.Sequential`).
         with_r (bool, optional): If `True`, adds radius (`r`) coordinate
             information to input image. Default: `False`
-        usegpu (bool, optional): If `True`, runs operations on GPU
-            Default: `True`
 
     Shape:
         - Input: Same as the input of the model.
@@ -128,12 +117,12 @@ Blog post can be found [here](https://eng.uber.com/coordconv/).
 
     Examples:
         >>> cnn_model = ...
-        >>> cnn_model = CoordConvNet(cnn_model, True, False)
+        >>> cnn_model = CoordConvNet(cnn_model, True)
         >>> input = torch.randn(8, 3, 64, 64)
         >>> outputs = cnn_model(input)
 
         >>> cnn_model = ...
-        >>> cnn_model = CoordConvNet(cnn_model, True, True).cuda()
+        >>> cnn_model = CoordConvNet(cnn_model, True).cuda()
         >>> input = torch.randn(8, 3, 64, 64).cuda()
         >>> outputs = cnn_model(input)
 ```
