@@ -12,8 +12,9 @@ def generate_input(batch_size, image_height, image_width, usegpu=False):
         device = torch.device("cuda:0")
     else:
         device = torch.device("cpu")
+
     input_image = torch.rand(batch_size, 3, image_height, image_width)
-    input_image.to(device)
+    input_image = input_image.to(device)
 
     return input_image
 
@@ -37,7 +38,11 @@ def test_coordConv(input_image):
 
     print('- CoordConv')
 
+    device = input_image.device
+
     coord_conv = CoordConv(3, 64, 3, with_r=True)
+    coord_conv = coord_conv.to(device)
+
     output = coord_conv(input_image)
 
     print('Input Size  : ', input_image.size())
@@ -50,7 +55,11 @@ def test_coordConvTranspose(input_image):
 
     print('- CoordConvTranspose')
 
+    device = input_image.device
+
     coord_conv_transpose = CoordConvTranspose(3, 64, 3, with_r=True)
+    coord_conv_transpose = coord_conv_transpose.to(device)
+
     output = coord_conv_transpose(input_image)
 
     print('Input Size  : ', input_image.size())
@@ -59,9 +68,11 @@ def test_coordConvTranspose(input_image):
     print('- CoordConvTranspose: OK!')
 
 
-def test_coordConvNet():
+def test_coordConvNet(input_image):
 
     print('- CoordConvNet')
+
+    device = input_image.device
 
     import torchvision.models as models
 
@@ -73,6 +84,8 @@ def test_coordConvNet():
 
     print('CoordVGG16 :\n', vgg16)
 
+    vgg16 = vgg16.to(device)
+
     output = vgg16(input_image)
 
     print('Input Size  : ', input_image.size())
@@ -82,10 +95,10 @@ def test_coordConvNet():
 
 if __name__ == '__main__':
 
-    usegpu = True
+    usegpu = False
     input_image = generate_input(2, 64, 64, usegpu=usegpu)
 
     test_addCoordinates(input_image)
     test_coordConv(input_image)
     test_coordConvTranspose(input_image)
-    test_coordConvNet()
+    test_coordConvNet(input_image)
